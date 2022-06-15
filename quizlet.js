@@ -51,7 +51,37 @@ app.delete("/Course/delete/", (req, res) => {
   })
 })
 
+const cardSchema = mongoose.Schema({ 
+    question:String,
+    answer:String,
+    tag:String,
+    comments:[Comments]
+}); 
+const Card = mongoose.model('Card', cardSchema);
+
+//Card CRUD 
+app.post('/card/create',(req,res)=>{
+    const c = new Card(req.body);
+     c.save().then(() => res.json({"msg":"Card added"})); 
+ });
+
+app.get('/cards',(req,res)=>{
+    Card.find({}).then((data) => {
+        res.json(data);
+       });
+ });
+
+app.put('/card/update/:id',(req,res)=>{
+    User.updateOne({_id:req.params.id},{question:req.body.question}).then(()=>{
+        res.json({"msg":"Card updated"});
+    });
+ });
+
+ app.delete('/card/delete/:id',(req,res)=>{
+    Card.deleteOne({_id:req.params.id}).then(()=>{
+        res.json({"msg":"Card deleted"});
+    });
+});
+
 app.listen(3000, () => console.log("finish course CRUD!"))
-
-
 
