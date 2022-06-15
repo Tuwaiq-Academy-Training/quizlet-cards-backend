@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-mongoose.connect("mongodb://localhost:27017/test")
+mongoose.connect('mongodb://localhost:27017/quizlet'); //connect to db 
 const express = require("express")
 const app = express()
 app.use(express.json())
@@ -83,5 +83,41 @@ app.put('/card/update/:id',(req,res)=>{
     });
 });
 
-app.listen(3000, () => console.log("finish course CRUD!"))
 
+
+//**************************COMMENT schema and model************************* 
+const Commentschema =mongoose.Schema(
+    {
+        Comment:"String",
+        User_id:{////// take user_id from user
+            type:mongoose.ObjectId,
+            ref:user
+    }});
+const Comments = mongoose.model('comments',Commentschema);//create model
+
+
+
+//******************************addd New Comment*************************
+app.post('/Comment/Create',(req,res)=>{  
+    new Comments((req.body)).save().then(()=>{  
+      res.json({"msg":"user added a comment"});
+  });
+  });
+
+//*********************************** show all comment*****************
+  app.get('/Comment/show',(req,res)=>{
+    Comments.find({}).populate('Userid').then((data)=>{
+    res.json(data);
+    });
+    });
+
+///*******************************Delet comment**********************
+
+ app.delete('/Comment/delete', (req,res)=>{          
+    Comments.deleteOne({_id:req.body.id}).then(()=>{
+        res.json({"msg":"user deleted acomment "});
+    });                                                      
+    });
+
+
+    app.listen(3000, ()=> console.log('epress started'));
