@@ -120,4 +120,59 @@ app.post('/Comment/Create',(req,res)=>{
     });
 
 
-    app.listen(3000, ()=> console.log('epress started'));
+
+//**************************user schema and model************************* 
+const userschema =mongoose.Schema(
+    {
+            user_id:ObjectId,
+            name:String,
+            email:String,
+            passowrd:Number,
+            cards:[card]
+
+        });// create schema
+
+const user= mongoose.model('user',userschema);//create model
+  
+
+//******user******* 
+app.post('/user/create',(req,res)=>{  
+    new user({
+      name:req.body.name,
+     email:req.body.email,
+     passowrd:req.body.passowrd,
+     cards:req.body.cards
+    }).save().then(()=>{  
+      res.json({"msg":"user created"});
+  });
+  });
+
+//*********************************find*******************************
+//*****find all users
+app.get('/user',(req,res)=>{
+  user.find({}).then((data)=>{
+  res.json(data);
+  });
+  });
+  
+
+
+//*****************update*************
+///update user title
+ app.put('/user/update/:name',(req,res)=>{  
+  task.updateOne({name:req.params.name},{email:req.body.email}).then(()=>{
+   res.json({"msg":"title is update"});
+   });
+  });
+
+ //***********************delete********
+ //delete user 
+    app.delete('/user/delete/:id', (req,res)=>{          
+        user.deleteOne({_id:req.params.id}).then(()=>{
+            res.json({"msg":"user deleted"});
+        });                                                      
+        });
+        
+
+
+  app.listen(3000, ()=> console.log('epress started'));
